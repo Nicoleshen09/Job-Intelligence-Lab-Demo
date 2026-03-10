@@ -1,0 +1,11 @@
+streamlit
+numpy==2.4.2
+pandas==2.2.2
+scikit-learn==1.8.0
+scipy==1.16.3
+sentence-transformers==5.2.3
+datasets==4.0.0
+torch==2.10.0
+matplotlib==3.10.0
+plotly
+pyarrow
