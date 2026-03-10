@@ -593,23 +593,51 @@ div[data-testid="stTextArea"] textarea:focus {
 # ──────────────────────────────────────────
 # Load
 # ──────────────────────────────────────────
+PARQUET_COLS = [
+    "segment_name_final",
+    "title",
+    "company_name",
+    "location",
+    "normalized_salary",
+]
+
 @st.cache_resource
 def load_model():
+    # Lazy-loaded on first prediction call
     return SentenceTransformer("all-MiniLM-L6-v2")
 
-@st.cache_data
+@st.cache_data(show_spinner=False)
 def load_data():
-    df = pd.read_parquet("artifacts/df_all.parquet")
-    X  = np.load("artifacts/X_fused.npy")
-    return df, X
+    # Load only columns needed by the UI
+    df = pd.read_parquet("artifacts/df_all.parquet", columns=PARQUET_COLS)
+
+    # Light dtype optimization
+    for c in ["segment_name_final", "company_name", "location"]:
+        if c in df.columns:
+            df[c] = df[c].fillna("").astype("category")
+
+    if "title" in df.columns:
+        df["title"] = df["title"].fillna("").astype(str)
+
+    if "normalized_salary" in df.columns:
+        df["normalized_salary"] = pd.to_numeric(
+            df["normalized_salary"], errors="coerce"
+        ).astype("float32")
+
+    return df
+
+@st.cache_resource
+def load_embeddings():
+    # Memory-map instead of fully loading into RAM
+    return np.load("artifacts/X_fused.npy", mmap_mode="r")
 
 @st.cache_resource
 def load_centroids():
     d = np.load("artifacts/segment_centroids.npz")
-    return {k: d[k] for k in d.files}
+    return {k: d[k].astype(np.float32) for k in d.files}
 
-model             = load_model()
-df_all, X_fused   = load_data()
+df_all = load_data()
+X_fused = load_embeddings()
 segment_centroids = load_centroids()
 
 def fmt_money(x):
@@ -829,7 +857,7 @@ if predict:
         with st.spinner("Classifying…"):
             # Robust inference block
             # Goal: better match training-time pipeline and reduce noise
-
+            model = load_model()
             raw_text = analysis_text.strip()
 
             # ── Step 1: split title (first non-empty line) from description ──
@@ -928,9 +956,9 @@ if predict:
             # ───────────────────────────────────────────────────────────────
 
             # Pull jobs from predicted segment
-            mask     = (df_all["segment_name_final"] == best_seg).values
-            seg_jobs = df_all.loc[mask].copy()
-            seg_embs = X_fused[mask]
+            seg_idx = np.flatnonzero((df_all["segment_name_final"].astype(str).values == best_seg))
+            seg_jobs = df_all.iloc[seg_idx]
+            seg_embs = X_fused[seg_idx]
 
             # Rank similar jobs within predicted segment
             sims    = seg_embs @ emb
@@ -949,7 +977,7 @@ if predict:
             st.session_state["last_avg_sal"] = avg_sal
             st.session_state["last_med_sal"] = med_sal
             st.session_state["last_sim_j"]   = sim_j
-            st.session_state["last_n_seg"]   = int(mask.sum())
+            st.session_state["last_n_seg"]   = int(seg_idx.sum())
         st.rerun()  # re-render page so chart highlights immediately
 
 
