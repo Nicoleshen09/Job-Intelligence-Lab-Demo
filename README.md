@@ -10,7 +10,7 @@
 
 An end-to-end machine learning pipeline that transforms raw job postings into interpretable job-market segments. The system identifies **21 occupational segments** from LinkedIn job postings and powers an **interactive Streamlit application** for exploring job-market structure, salary benchmarks, and similar roles.
 
-*Live Demo:**  
+**Live Demo:**  
 [Launch the Streamlit App](https://job-intelligence-lab-demo.streamlit.app)
 
 Full modeling pipeline available in:
@@ -24,19 +24,18 @@ Python • SentenceTransformers • Scikit-learn • Hugging Face Datasets • N
 ---
 ## Project Highlights
 
-• Built an **NLP pipeline** that converts unstructured job postings into structured labor-market segments
-
-• Embedded job titles and descriptions using **Sentence-Transformers**  
-• Clustered job postings using **hierarchical agglomerative clustering**  
-• Identified **21 interpretable occupational segments** from real job data  
-• Deployed an **interactive Streamlit application** for real-time exploration  
+- Built an **NLP pipeline** converts job postings into labor-market segments
+- Embedded job titles and descriptions using **Sentence-Transformers**  
+- Clustered job postings using **hierarchical agglomerative clustering**  
+- Identified **21 interpretable occupational segments** from real job data  
+- Deployed an **interactive Streamlit application** for real-time exploration  
 
 Job postings contain rich information about the labor market, but the text is often inconsistent and difficult to analyze at scale.
 This project demonstrates how modern NLP techniques can convert noisy text data into interpretable labor-market intelligence.
 
 ---
 
-Dataset: LinkedIn job postings (Hugging Face dataset: datastax/linkedin_job_listings)
+Dataset: real LinkedIn job postings (Hugging Face dataset: datastax/linkedin_job_listings)
 
 ---
 ## Pipeline Overview
