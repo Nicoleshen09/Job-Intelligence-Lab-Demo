@@ -1,0 +1,14 @@
+name: Wake Streamlit Demo
+
+on:
+  schedule:
+    - cron: "0 12 * * *"   # Chicago time ~7AM
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Streamlit App
+        run: curl -I https://job-intelligence-lab-demo.streamlit.app
