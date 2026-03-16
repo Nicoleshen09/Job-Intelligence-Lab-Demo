@@ -25,6 +25,7 @@ Python • SentenceTransformers • Scikit-learn • Hugging Face Datasets • N
 ## Project Highlights
 
 • Built an **NLP pipeline** that converts unstructured job postings into structured labor-market segments
+
 • Embedded job titles and descriptions using **Sentence-Transformers**  
 • Clustered job postings using **hierarchical agglomerative clustering**  
 • Identified **21 interpretable occupational segments** from real job data  
@@ -39,38 +40,53 @@ Dataset: LinkedIn job postings (Hugging Face dataset: datastax/linkedin_job_list
 
 ---
 ## Pipeline Overview
-Job Postings
-     │
-     ▼
-Text Cleaning
-     │
-     ▼
-SentenceTransformer Embeddings
-(title + description)
-     │
-     ▼
-Embedding Fusion
-     │
-     ▼
-Level-1 Agglomerative Clustering (K=10)
-     │
-     ▼
-Cluster Interpretation
-     │
-     ▼
-Level-2 Refinement (Tech + Sales)
-     │
-     ▼
-22 Structural Cluster Paths
-     │
-     ▼
-Semantic Consolidation
-     │
-     ▼
-21 Final Job Segments
-     │
-     ▼
-Market Insights + Demo
+```text
+                +------------------------+
+                |  LinkedIn Job Postings |
+                +-----------+------------+
+                            |
+                            v
+                   +------------------+
+                   |   Text Cleaning   |
+                   +--------+---------+
+                            |
+                            v
+        +------------------------------------------+
+        | SentenceTransformer Embeddings           |
+        |  - Title embedding                       |
+        |  - Description embedding                 |
+        +------------------+-----------------------+
+                           |
+                           v
+                   +------------------+
+                   | Embedding Fusion |
+                   +--------+---------+
+                            |
+                            v
+             +-------------------------------+
+             | Hierarchical Agglomerative    |
+             | Clustering                    |
+             +---------------+---------------+
+                             |
+                             v
+                    +----------------+
+                    | 21 Job Segments|
+                    +--------+-------+
+                             |
+                             v
+              +--------------------------------+
+              | Precomputed Artifacts          |
+              | X_fused.npy                    |
+              | segment_centroids.npz          |
+              +---------------+----------------+
+                              |
+                              v
+                    +-------------------+
+                    | Streamlit App     |
+                    | Real-time Segment |
+                    | Classification    |
+                    +-------------------+
+```
 
 ---
 
@@ -87,13 +103,13 @@ Both fields are embedded using the **SentenceTransformer model (`all-MiniLM-L6-v
 
 To better capture job intent, title and description embeddings are combined using a weighted fusion:
 
-\[
-X = \alpha \cdot X_{title} + (1-\alpha) \cdot X_{description}
-\]
+```markdown
+X = α · X_title + (1 − α) · X_description
+```
 
 where:
 
-- \( \alpha = 0.75 \)
+- alpha = 0.75
 - embeddings are L2-normalized before and after fusion.
 
 This produces a **384-dimensional semantic representation** for each job posting.
@@ -213,21 +229,24 @@ These insights power the **interactive demo application**.
 
 ## Repository Structure
 The repository contains the deployed Streamlit application and the precomputed artifacts required for real-time job segment classification.
-.
-├── artifacts/              # Precomputed embeddings and clustering artifacts
+
+```text
+job-intelligence-lab/
+│
+├── artifacts/              # Precomputed embeddings and clustering
 │   ├── df_all.parquet
 │   ├── X_fused.npy
 │   └── segment_centroids.npz
 │
-├── assets/                 # Images and demo screenshots
+├── assets/
 │   └── demo_screenshot.jpg
 │
 ├── notebooks/
 │   └── job_market_clustering_pipeline.ipynb
 │
-├── app.py                  # Streamlit application for interactive exploration
+├── app.py                  # Streamlit application for interactive
 ├── requirements.txt        # Python dependencies
 ├── runtime.txt             # Python version for Streamlit deployment
-│
 ├── LICENSE
 └── README.md
+```
