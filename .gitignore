@@ -4,5 +4,4 @@ __pycache__/
 *.pyc
 .env
 .streamlit/secrets.toml
-*.ipynb
-*.pdf
+.Rhistory

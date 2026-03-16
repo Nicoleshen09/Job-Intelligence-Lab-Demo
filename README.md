@@ -1,19 +1,43 @@
-## Job Market Segmentation with Hierarchical Clustering
+# Job Intelligence Lab  
 
-## Overview
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![ML](https://img.shields.io/badge/Machine%20Learning-NLP-green)
+![Framework](https://img.shields.io/badge/Framework-Streamlit-red)
 
-This project builds an interpretable job market segmentation pipeline using
-hierarchical clustering on job posting text data.
+### NLP-Powered Job Market Segmentation with Semantic Embeddings and Hierarchical Clustering
 
-By combining semantic text embeddings with hierarchical clustering,
-the pipeline automatically identifies occupational segments and
-extracts market insights such as salary patterns and job distribution.
+![Demo Screenshot](assets/demo_screenshot.jpg)
 
-The final system produces **21 interpretable job segments** from raw job postings
-and supports an **interactive demo for segment exploration**.
+An end-to-end machine learning pipeline that transforms raw job postings into interpretable job-market segments. The system identifies **21 occupational segments** from LinkedIn job postings and powers an **interactive Streamlit application** for exploring job-market structure, salary benchmarks, and similar roles.
+
+*Live Demo:**  
+[Launch the Streamlit App](https://job-intelligence-lab-demo.streamlit.app)
+
+Full modeling pipeline available in:
+notebooks/job_market_clustering_pipeline.ipynb
+
+---
+## Tech Stack
+
+Python • SentenceTransformers • Scikit-learn • Hugging Face Datasets • NLP • Hierarchical Clustering • Streamlit
+
+---
+## Project Highlights
+
+• Built an **NLP pipeline** that converts unstructured job postings into structured labor-market segments
+• Embedded job titles and descriptions using **Sentence-Transformers**  
+• Clustered job postings using **hierarchical agglomerative clustering**  
+• Identified **21 interpretable occupational segments** from real job data  
+• Deployed an **interactive Streamlit application** for real-time exploration  
+
+Job postings contain rich information about the labor market, but the text is often inconsistent and difficult to analyze at scale.
+This project demonstrates how modern NLP techniques can convert noisy text data into interpretable labor-market intelligence.
 
 ---
 
+Dataset: LinkedIn job postings (Hugging Face dataset: datastax/linkedin_job_listings)
+
+---
 ## Pipeline Overview
 Job Postings
      │
@@ -188,19 +212,22 @@ These insights power the **interactive demo application**.
 ---
 
 ## Repository Structure
-project/
+The repository contains the deployed Streamlit application and the precomputed artifacts required for real-time job segment classification.
+.
+├── artifacts/              # Precomputed embeddings and clustering artifacts
+│   ├── df_all.parquet
+│   ├── X_fused.npy
+│   └── segment_centroids.npz
 │
-├── data/
-│   └── job_postings.csv
+├── assets/                 # Images and demo screenshots
+│   └── demo_screenshot.jpg
 │
 ├── notebooks/
-│   └── final_project.ipynb
+│   └── job_market_clustering_pipeline.ipynb
 │
-├── app.py
+├── app.py                  # Streamlit application for interactive exploration
+├── requirements.txt        # Python dependencies
+├── runtime.txt             # Python version for Streamlit deployment
 │
-├── assets/
-│   └── demo.gif
-│
-├── requirements.txt
-│
+├── LICENSE
 └── README.md
